@@ -17,11 +17,11 @@ import java.util.UUID;
 public class Office {
 
     @Id
-    private String officeId;
+    private UUID officeId;
     private String officeName;
     private String officeLocation;
     private String officeNumber;
     private String officeEmail;
-
+    private String officeCode;
 
 }
