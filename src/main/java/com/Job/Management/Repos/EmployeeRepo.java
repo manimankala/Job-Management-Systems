@@ -13,10 +13,10 @@ import java.util.UUID;
 @Repository
 public interface EmployeeRepo extends MongoRepository<Employee, UUID> {
 
-    @Query("{ 'employeeName' : ?0 }")
+    @Query("{'employeeId' :?0 }")
+    Employee findByEmployeeId(UUID employeeId);
+
+    @Query("{'employeeName' :?0 }")
     Optional<Employee> findByEmpName(String employeeName);
-
-
-
 
 }

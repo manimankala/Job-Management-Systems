@@ -19,6 +19,7 @@ public class EmployeeController {
     private EmployeeService employeeService;
     @PostMapping
     public Employee createEmployee(@RequestBody Employee employee) {
+
         return employeeService.addEmployee(employee);
     }
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -40,13 +41,13 @@ public class EmployeeController {
     }
 
     @GetMapping("/filter")
-    public List<Employee> filterEmployee(@RequestParam String skill) {
-        return employeeService.filterEmployee(skill);
+    public List<Employee> filterEmployee(@RequestParam String skill,@RequestParam String role) {
+        return employeeService.filterEmployee(skill,role);
     }
-    @GetMapping(value = "/filter/role")
-    public List<Employee> filterEmployeeByRole(@RequestParam String role) {
-        return employeeService.filterEmpByRole(role);
-    }
+//    @GetMapping(value = "/filter/role")
+//    public List<Employee> filterEmployeeByRole(@RequestParam String role) {
+//        return employeeService.filterEmpByRole(role);
+//    }
     
     @GetMapping("/page/{offset}/{pageSize}")
     public Page<Employee> getPaginateEmployee(@PathVariable int offset, @PathVariable int pageSize) {

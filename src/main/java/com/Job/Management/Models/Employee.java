@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Document
@@ -19,6 +20,7 @@ public class Employee {
 
     @Id
     private UUID employeeId;
+    private String employeeOfficeName;
     private String employeeName;
     private String employeeNumber;
     private String employeeEmail;
@@ -27,5 +29,6 @@ public class Employee {
     private String employeeRole;
     private String employeeJoiningDate;
     private String employeeBloodGroup;
+    private String employeeCode;
 
 }

@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.BooleanOperators;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -29,6 +30,7 @@ public class EmployeeService {
 
     public Employee addEmployee(Employee employee) {
         employee.setEmployeeId(UUID.randomUUID());
+        employee.setEmployeeCode(employee.getEmployeeOfficeName().substring(0,3)+UUID.randomUUID().toString().substring(0,4));
         return employeeRepo.save(employee);
     }
 
@@ -50,30 +52,34 @@ public class EmployeeService {
     }
 
     public Employee updateEmployee(Employee updatedemployee) {
-        Employee existingEmp  = employeeRepo.findById(updatedemployee.getEmployeeId()).get();
-        existingEmp.setEmployeeName(updatedemployee.getEmployeeName());
-        existingEmp.setEmployeeNumber(updatedemployee.getEmployeeNumber());
-        existingEmp.setEmployeeEmail(updatedemployee.getEmployeeEmail());
-        existingEmp.setEmployeeLocation(updatedemployee.getEmployeeLocation());
-        existingEmp.setEmployeeSkills(updatedemployee.getEmployeeSkills());
-        existingEmp.setEmployeeRole(updatedemployee.getEmployeeRole());
-        existingEmp.setEmployeeJoiningDate(updatedemployee.getEmployeeJoiningDate());
-        existingEmp.setEmployeeBloodGroup(updatedemployee.getEmployeeBloodGroup());
-        return employeeRepo.save(existingEmp);
+        Employee existingEmp = employeeRepo.findByEmployeeId(updatedemployee.getEmployeeId());
+        if ( existingEmp != null) {
+            existingEmp.setEmployeeName(updatedemployee.getEmployeeName());
+            existingEmp.setEmployeeOfficeName(updatedemployee.getEmployeeOfficeName());
+            existingEmp.setEmployeeNumber(updatedemployee.getEmployeeNumber());
+            existingEmp.setEmployeeEmail(updatedemployee.getEmployeeEmail());
+            existingEmp.setEmployeeLocation(updatedemployee.getEmployeeLocation());
+            existingEmp.setEmployeeSkills(updatedemployee.getEmployeeSkills());
+            existingEmp.setEmployeeRole(updatedemployee.getEmployeeRole());
+            existingEmp.setEmployeeJoiningDate(updatedemployee.getEmployeeJoiningDate());
+            existingEmp.setEmployeeBloodGroup(updatedemployee.getEmployeeBloodGroup());
+            return employeeRepo.save(existingEmp);
+        } else {
+            return null;
+        }
     }
+
     public String deleteEmployee(UUID id) {
         employeeRepo.deleteById(id);
         return "Employee deleted Successfully";
 
     }
-    public List<Employee> filterEmployee(String field) {
+    public List<Employee> filterEmployee(String field,String role) {
         Query query = new Query();
-        query.addCriteria(Criteria.where("employeeSkills").regex(field,"i"));
-        return mongoTemplate.find(query,Employee.class);
-    }
-    public List<Employee> filterEmpByRole(String role) {
-        Query query = new Query();
-        query.addCriteria(Criteria.where("employeeRole").regex(role,"i"));
+        Criteria criteria=new Criteria();
+        query.addCriteria(criteria.andOperator(Criteria.where("employeeSkills").regex(field,"i"),Criteria.where(
+                "employeeSkills").regex(field,"i")));
+        //query.addCriteria(Criteria.where("employeeSkills").regex(field,"i").and("employeeRole").regex(role,"i"));
         return mongoTemplate.find(query,Employee.class);
     }
 
