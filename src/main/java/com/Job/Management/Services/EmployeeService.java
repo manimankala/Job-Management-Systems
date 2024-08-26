@@ -28,6 +28,8 @@ public class EmployeeService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
+
+
     public Employee addEmployee(Employee employee) {
         employee.setEmployeeId(UUID.randomUUID());
         employee.setEmployeeCode(employee.getEmployeeOfficeName().substring(0,3)+UUID.randomUUID().toString().substring(0,4));
@@ -77,12 +79,21 @@ public class EmployeeService {
     public List<Employee> filterEmployee(String field,String role) {
         Query query = new Query();
         Criteria criteria=new Criteria();
+
         query.addCriteria(criteria.andOperator(Criteria.where("employeeSkills").regex(field,"i"),Criteria.where(
                 "employeeSkills").regex(field,"i")));
         //query.addCriteria(Criteria.where("employeeSkills").regex(field,"i").and("employeeRole").regex(role,"i"));
         return mongoTemplate.find(query,Employee.class);
     }
 
-}
+    public List<String> getEmployeeCodesUsingOfficeName(String OfficeName){
+        String office=OfficeName.length()>3?OfficeName.substring(0,3):OfficeName;
+        Query query=new Query();
 
+        query.addCriteria(Criteria.where("employeeCode").regex(office,"i"));
+        query.fields().include("employeeCode").exclude("employeeId");
+        return mongoTemplate.find(query,Employee.class).stream().map(Employee::getEmployeeCode).toList();
+    }
+
+}
 

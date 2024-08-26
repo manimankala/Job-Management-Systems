@@ -5,6 +5,7 @@ import com.Job.Management.Services.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,8 +63,10 @@ public class EmployeeController {
         return employeeService.deleteEmployee(employeeId);
     }
 
-
-
-
+    @GetMapping(value = "/empCode")
+    public List<String> getEmployeeCodesUsingOfficeName(@RequestParam String officeName)
+    {
+        return employeeService.getEmployeeCodesUsingOfficeName(officeName);
+    }
 }
 
